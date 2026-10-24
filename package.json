@@ -1,0 +1,21 @@
+{
+  "name": "hangong",
+  "version": "1.0.0",
+  "description": "汉宫 (Han Gong) · magpie gateway middleware: put a full workbench system prompt on every request, in each protocol's own system-prompt place — one injection point for every agent. 将整段工作台系统提示词注入每个经过网关的请求，一处配置、全 Agent 生效",
+  "type": "module",
+  "files": ["hangong.middleware.js", "hangong-prompt.js", "README.md", "LICENSE", "cases.json", "hangong.test.mjs", "assets/hangong-prompt.md", "scripts/build-prompt.mjs"],
+  "keywords": ["magpie", "magpie-plugin", "magpie-middleware", "system-prompt", "opencode", "opencode-plugin", "llm-gateway", "prompt"],
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/YaoGuaiLi/hangong.git" },
+  "magpie": {
+    "middleware": "./hangong.middleware.js",
+    "options": {
+      "override": true,
+      "position": "prepend"
+    }
+  },
+  "scripts": {
+    "test": "node hangong.test.mjs",
+    "build": "node scripts/build-prompt.mjs"
+  }
+}
