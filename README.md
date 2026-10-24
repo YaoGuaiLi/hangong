@@ -99,6 +99,10 @@ magpie plugin update           # pull the newest version
 
 ### How it works — architecture
 
+![Architecture](docs/architecture.svg)
+
+<details><summary>Mermaid 源码（GitHub 原生渲染；SVG 用 <code>node scripts/render-diagrams.mjs</code> 重新生成）</summary>
+
 ```mermaid
 flowchart LR
     subgraph agents["Agents (any that route through magpie)"]
@@ -117,9 +121,15 @@ flowchart LR
     RT --> P
 ```
 
+</details>
+
 The middleware is the first hop inside the gateway: it sees the raw request body and the request's protocol (`ctx.protocol`), then mutates only the system-prompt field of that protocol. Nothing else — routing, account pooling, usage accounting — is touched.
 
 ### How it works — request sequence
+
+![Request sequence](docs/sequence.svg)
+
+<details><summary>Mermaid 源码（GitHub 原生渲染；SVG 用 <code>node scripts/render-diagrams.mjs</code> 重新生成）</summary>
 
 ```mermaid
 sequenceDiagram
@@ -132,7 +142,7 @@ sequenceDiagram
 
     U->>A: task
     A->>M: POST /v1/… (agent's own system prompt inside)
-    M->>H: body, ctx {protocol, agent, model, options}
+    M->>H: body, ctx (protocol, agent, model, options)
     H->>H: agents/models filter?
     H->>H: pick position per protocol<br/>(system · messages[0] · instructions · systemInstruction)
     H-->>M: body with your prompt prepended
@@ -141,6 +151,8 @@ sequenceDiagram
     M-->>A: reply
     A-->>U: answer under the workbench contract
 ```
+
+</details>
 
 Budget: the injection itself is pure string/array work — measured ~1 ms per request in the app's own telemetry, far inside the gateway's middleware budget.
 
@@ -265,6 +277,10 @@ magpie plugin update           # 更新到最新版
 
 ### 实现架构
 
+![实现架构](docs/architecture.svg)
+
+<details><summary>Mermaid 源码（GitHub 原生渲染；SVG 用 <code>node scripts/render-diagrams.mjs</code> 重新生成）</summary>
+
 ```mermaid
 flowchart LR
     subgraph agents["Agent（一切走 magpie 的客户端）"]
@@ -283,9 +299,15 @@ flowchart LR
     RT --> P
 ```
 
+</details>
+
 中间件是网关内的第一跳：拿到原始请求体和协议标识（`ctx.protocol`），只改该协议的系统提示词字段，其余一切（路由、账号池、用量统计）原样通过。
 
 ### 请求时序
+
+![请求时序](docs/sequence.svg)
+
+<details><summary>Mermaid 源码（GitHub 原生渲染；SVG 用 <code>node scripts/render-diagrams.mjs</code> 重新生成）</summary>
 
 ```mermaid
 sequenceDiagram
@@ -298,7 +320,7 @@ sequenceDiagram
 
     U->>A: 任务
     A->>M: POST /v1/…（请求内含 Agent 原生系统提示词）
-    M->>H: body, ctx {protocol, agent, model, options}
+    M->>H: body, ctx (protocol, agent, model, options)
     H->>H: agents / models 过滤？
     H->>H: 按协议选位置<br/>(system · messages[0] · instructions · systemInstruction)
     H-->>M: 已前置注入的 body
@@ -307,6 +329,8 @@ sequenceDiagram
     M-->>A: 回复
     A-->U: 按工作台契约作答
 ```
+
+</details>
 
 性能：注入是纯字符串/数组操作——应用遥测实测约 1 ms/次，远低于网关中间件预算。
 
