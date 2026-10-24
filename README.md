@@ -97,6 +97,16 @@ magpie plugin rm  hangong      # remove
 magpie plugin update           # pull the newest version
 ```
 
+### Control page (v1.1+)
+
+The plugin ships a native control page inside the magpie window: **sidebar → 插件 → 汉宫 (Han Gong)** — the entry appears next to 内置 / 发现 / 已安装 (after an app (re)start). It is plain sandboxed HTML with magpie's own theme, no build step:
+
+- reads the live options through the page bridge (`magpie.options.get`)
+- edits them in a form — override switch, position, agents / models filters, a custom `on_prompt` — and **saves them back through `magpie.options.set`**, taking effect on the very next request, no restart
+- one-click copy of the two activation-word test commands
+
+The page runs in magpie's `sandbox="allow-scripts"` frame: no network, no storage — everything goes through the bridge. CLI equivalents still work (`magpie plugin options hangong '…'`).
+
 ### How it works — architecture
 
 ![Architecture](docs/architecture.svg)
@@ -170,11 +180,14 @@ node hangong.test.mjs     # 15 cases, no dependencies
 hangong/
 ├── hangong.middleware.js    # the middleware (4 protocols, 5 options)
 ├── hangong-prompt.js        # generated prompt module (imported by the middleware)
+├── page/                    # the in-app control page (index.html + app.js)
 ├── assets/hangong-prompt.md # the prompt source — edit this, then rebuild
-├── scripts/build-prompt.mjs # md → js one-liner generator
+├── assets/icon.svg          # card & page icon
+├── docs/*.svg               # rendered architecture / sequence diagrams
+├── scripts/                 # build-prompt.mjs · render-diagrams.mjs
 ├── cases.json               # declarative test cases (community format)
 ├── hangong.test.mjs         # standalone test runner
-├── package.json             # magpie.middleware + suggested options
+├── package.json             # magpie.middleware + magpie.page + suggested options
 └── LICENSE                  # MIT
 ```
 
@@ -275,6 +288,16 @@ magpie plugin rm  hangong      # 卸载
 magpie plugin update           # 更新到最新版
 ```
 
+### 控制台页面（v1.1+）
+
+插件自带 magpie 窗口内的原生控制页：**侧边栏 → 插件 → 汉宫**——入口与 内置 / 发现 / 已安装 并列（应用重启后出现）。纯沙盒 HTML，套用 magpie 自身主题，无构建步骤：
+
+- 通过页面桥接（`magpie.options.get`）读取当前生效配置
+- 表单编辑——override 开关、注入位置、agents / models 过滤、自定义 `on_prompt`——保存走 `magpie.options.set` **直接写回，下一个请求即生效**，无需重启
+- 一键复制两条激活词测试命令
+
+页面跑在 magpie 的 `sandbox="allow-scripts"` 框架里：无网络、无存储，一切经桥接进出。命令行等效操作依然可用（`magpie plugin options hangong '…'`）。
+
 ### 实现架构
 
 ![实现架构](docs/architecture.svg)
@@ -348,11 +371,14 @@ node hangong.test.mjs     # 15 个用例，零依赖
 hangong/
 ├── hangong.middleware.js    # 中间件本体（4 协议、5 个选项）
 ├── hangong-prompt.js        # 生成的提示词模块（中间件相对导入）
+├── page/                    # 应用内控制台页面（index.html + app.js）
 ├── assets/hangong-prompt.md # 提示词源文件——改这里，然后重新构建
-├── scripts/build-prompt.mjs # md → js 一键生成器
+├── assets/icon.svg          # 卡片与页面图标
+├── docs/*.svg               # 已渲染的架构图 / 时序图
+├── scripts/                 # build-prompt.mjs · render-diagrams.mjs
 ├── cases.json               # 声明式测试用例（社区格式）
 ├── hangong.test.mjs         # 独立测试跑器
-├── package.json             # magpie.middleware + 建议选项
+├── package.json             # magpie.middleware + magpie.page + 建议选项
 └── LICENSE                  # MIT
 ```
 
