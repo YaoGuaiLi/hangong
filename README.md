@@ -97,6 +97,13 @@ magpie plugin rm  hangong      # remove
 magpie plugin update           # pull the newest version
 ```
 
+### Prompt library & agent switches & handshake routing (v1.3+)
+
+- **Prompt versions** — the package bundles five cleaned builds of the prompt lineage (v5.2 full · v5 · v4 · v3 · English variant B, relay-station headers stripped). Pick one in the control page or set `{"prompt":"v3"}`; `on_prompt` still wins when set.
+- **Agent switches** — the page lists magpie's known agents with on/off toggles backed by a blocklist (`agents_off`): everything stays injected by default, agents you switch off stop getting the prompt, and agents magpie adds later are injected without any action.
+- **Activation-word light routing** — a message that is exactly 寒霜 / 自检 / SELF-CHECK gets a few-line handshake instruction instead of the full ~79K prompt (measured on the gateway: **111 vs 20,811 prompt tokens**), with an optional cheaper model via `handshake_model`. Off by default only when `handshake:false`.
+
+> Gateway-engine notes baked into the build: the middleware avoids subdirectory relative imports and `Set.has` for CJK strings (the moejs JS engine mishandles both); page scripts are plain scripts, not modules — sandboxed iframes resolve module specifiers against the wrong base.
 ### Control page (v1.1+)
 
 The plugin ships a native control page inside the magpie window: **sidebar → 插件 → 汉宫 (Han Gong)** — the entry appears next to 内置 / 发现 / 已安装 (after an app (re)start). It is plain sandboxed HTML with magpie's own theme, no build step:
@@ -288,6 +295,13 @@ magpie plugin rm  hangong      # 卸载
 magpie plugin update           # 更新到最新版
 ```
 
+### 提示词库 · Agent 开关 · 握手轻路由（v1.3+）
+
+- **提示词版本库**——包内置五份净化版（完整版 v5.2 · 轻量 V5 · V4 · V3 · 英文变体 B，中转站保护头已剥离）。控制页点选或 `{"prompt":"v3"}`；设置 `on_prompt` 时仍以原文优先。
+- **Agent 开关**——页面列出 magpie 已知 Agent，逐个开关，底层是排除表（`agents_off`）：默认全部注入，关掉的不再注入，magpie 以后新增的 Agent 无需操作、默认注入。
+- **激活词轻路由**——消息恰好是 寒霜 / 自检 / SELF-CHECK 时，只注入几行握手指令而非 79K 全文（网关实测 **111 vs 20,811 prompt tokens**，省 99.5%），可用 `handshake_model` 把握手请求路由到便宜模型。设 `handshake:false` 关闭。
+
+> 网关引擎兼容性已内置：中间件避开子目录相对导入与中文 `Set.has`（moejs 引擎对两者处理有缺陷）；页面脚本用普通 script 而非 module——沙盒 iframe 的模块路径 base 解析不对。
 ### 控制台页面（v1.1+）
 
 插件自带 magpie 窗口内的原生控制页：**侧边栏 → 插件 → 汉宫**——入口与 内置 / 发现 / 已安装 并列（应用重启后出现）。纯沙盒 HTML，套用 magpie 自身主题，无构建步骤：
